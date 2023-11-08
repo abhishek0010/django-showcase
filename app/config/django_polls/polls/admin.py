@@ -1,9 +1,11 @@
 from django.contrib import admin
 from .models import Question, Choice
 
+
 class ChoiceInline(admin.TabularInline):
     model = Choice
     extra = 3
+
 
 # HERE the order for model presentation is modified
 class QuestionAdmin(admin.ModelAdmin):
@@ -15,7 +17,6 @@ class QuestionAdmin(admin.ModelAdmin):
         ("Date information", {"fields": ["pub_date"]}),
     ]
     inlines = [ChoiceInline]
-    
 
 
 admin.site.register(Question, QuestionAdmin)
