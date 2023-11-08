@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  web:
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app/:/usr/src/app/
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.django.rule=Host(`django.abhishek0010.in`)"
+      - "traefik.http.routers.django.tls=true"
+      - "traefik.http.services.django.loadbalancer.server.port=8000"
+    networks:
+      - django-postgres
+      - reverse_proxy_nw
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+      - POSTGRES_DB=hello_django_dev
+    networks:
+      - django-postgres
+
+networks:
+  django-postgres:
+  reverse_proxy_nw:
+    external: true
+
+volumes:
+  postgres_data:
